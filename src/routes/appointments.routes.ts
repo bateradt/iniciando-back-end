@@ -11,7 +11,9 @@ const appointmentsRouter = Router();
 
 appointmentsRouter.get('/', async (request, response) => {
     const appointmentRepository = getCustomRepository(AppointmentsRepository);
-    const appointments = await appointmentRepository.find();
+    const appointments = await appointmentRepository.find({
+        relations: ['categories'],
+    });
 
     return response.json(appointments);
 });
