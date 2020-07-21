@@ -7,7 +7,7 @@ import {
     ManyToOne,
     JoinColumn,
 } from 'typeorm';
-import User from './User';
+import User from '@modules/users/infra/typeorm/entities/User';
 
 // KISS - Keep it Simple & Stupid - mantenha o código simples e estupido, melhore quando for necessário
 
