@@ -28,19 +28,27 @@
             "error",
             "ignorePackages",
             {
-              "ts": "never"
+                "ts": "never"
             }
-          ],
-          "prettier/prettier": "error",
-          "camelcase": "off",
-          "@typescript-eslint/no-unused-vars": ["error", {
-              "argsIgnorePattern": "_"
-          }]
-
+        ],
+        "@typescript-eslint/interface-name-prefix": [
+            "error",
+            {
+                "prefixWith": "always"
+            }
+        ],
+        "prettier/prettier": "error",
+        "camelcase": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "_"
+            }
+        ]
     },
     "settings": {
         "import/resolver": {
-          "typescript": {}
+            "typescript": {}
         }
-      }
+    }
 }
