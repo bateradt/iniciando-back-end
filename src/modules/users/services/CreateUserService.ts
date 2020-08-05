@@ -1,35 +1,45 @@
-import { getRepository } from 'typeorm';
-import { hash } from 'bcryptjs';
+import { injectable, inject } from 'tsyringe';
 import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities/User';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IHashProvider from '@modules/users/providers/HashProvider/models/IHashNProvider';
 
-interface RequestDTO {
+interface IRequestDTO {
     name: string;
     email: string;
     password: string;
 }
 
+@injectable()
 class CreateUserService {
-    public async execute({ name, email, password }: RequestDTO): Promise<User> {
-        const userRepository = getRepository(User);
+    constructor(
+        @inject('UsersRepository')
+        private usersRepository: IUsersRepository,
 
-        const emailExists = await userRepository.findOne({
-            where: { email },
-        });
+        @inject('HashProvider')
+        private hashProvider: IHashProvider,
+    ) {
+        // console.log(usersRepository);
+    }
+
+    public async execute({
+        name,
+        email,
+        password,
+    }: IRequestDTO): Promise<User> {
+        const emailExists = await this.usersRepository.findByEmail(email);
 
         if (emailExists) {
-            throw new AppError('Email addres already used.', 400);
+            throw new AppError('Email address already used.', 400);
         }
 
-        const cryptedPass = await hash(password, 8);
+        const cryptedPass = await this.hashProvider.generateHash(password);
 
-        const user = userRepository.create({
+        const user = await this.usersRepository.create({
             name,
             email,
             password: cryptedPass,
         });
-
-        await userRepository.save(user);
 
         return user;
     }

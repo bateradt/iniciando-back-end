@@ -1,38 +1,24 @@
 import { Router } from 'express';
-import { parseISO } from 'date-fns';
-import { getCustomRepository } from 'typeorm';
-import AppointmentsRepository from '@modules/appointments/infra/typeorm/repositories/AppointmentsRepository';
-import CreateAppointmentService from '@modules/appointments/services/CreateAppointmentService';
+import AppointmentsController from '@modules/appointments/infra/http/controllers/AppointmentsController';
+import ProviderAppointmentsController from '@modules/appointments/infra/http/controllers/ProviderAppointmentsController';
 
 const appointmentsRouter = Router();
-// const appointmentRepository = new AppointmentsRepository();
+const appointmentsController = new AppointmentsController();
+const providerAppointmentsController = new ProviderAppointmentsController();
 
 // SoC - separete of concerns
 
-appointmentsRouter.get('/', async (request, response) => {
-    const appointmentRepository = getCustomRepository(AppointmentsRepository);
-    const appointments = await appointmentRepository.find({
-        relations: ['categories'],
-    });
+// appointmentsRouter.get('/', async (request, response) => {
+//     const appointments = await appointmentRepository.find({
+//         relations: ['categories'],
+//     });
 
-    return response.json(appointments);
-});
+//     return response.json(appointments);
+// });
 
 // como estamos usando um middleware para chamar a rota, não precisamos mais colocar o nome completo no endereço
 // somente uma /
-appointmentsRouter.post('/', async (request, response) => {
-    const { provider_id, date } = request.body;
-
-    const parsedDate = parseISO(date);
-
-    const createAppointmentService = new CreateAppointmentService();
-
-    const appointment = await createAppointmentService.execute({
-        provider_id,
-        date: parsedDate,
-    });
-
-    return response.status(200).json(appointment);
-});
+appointmentsRouter.post('/', appointmentsController.create);
+appointmentsRouter.get('/myschedule', providerAppointmentsController.index);
 
 export default appointmentsRouter;

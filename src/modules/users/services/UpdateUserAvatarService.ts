@@ -1,23 +1,31 @@
-import path from 'path';
-import { getRepository } from 'typeorm';
-import fs from 'fs';
+import { injectable, inject } from 'tsyringe';
 import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities//User';
-import uploadConfig from '@config/upload';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
-interface RequestDTO {
+interface IRequestDTO {
     user_id: string;
     avatarFileName: string;
 }
 
+@injectable()
 class UpdateUserAvatarService {
-    public async Execute({
+    constructor(
+        @inject('UsersRepository')
+        private usersRepository: IUsersRepository,
+
+        @inject('StorageProvider')
+        private storageProvider: IStorageProvider,
+    ) {
+        // console.log(usersRepository);
+    }
+
+    public async execute({
         user_id,
         avatarFileName,
-    }: RequestDTO): Promise<User> {
-        const userRepository = getRepository(User);
-
-        const user = await userRepository.findOne(user_id);
+    }: IRequestDTO): Promise<User> {
+        const user = await this.usersRepository.findByID(user_id);
 
         if (!user) {
             throw new AppError(
@@ -27,28 +35,14 @@ class UpdateUserAvatarService {
         }
 
         if (user.avatar) {
-            const userAvatarFilePath = path.join(
-                uploadConfig.directory,
-                user.avatar,
-            );
-
-            let userAvatarFileExists;
-            try {
-                userAvatarFileExists = await fs.promises.stat(
-                    userAvatarFilePath,
-                );
-            } catch {
-                userAvatarFileExists = undefined;
-            }
-
-            if (userAvatarFileExists) {
-                await fs.promises.unlink(userAvatarFilePath);
-            }
+            await this.storageProvider.deleteFile(user.avatar);
         }
 
-        user.avatar = avatarFileName;
+        const fileName = await this.storageProvider.saveFile(avatarFileName);
 
-        await userRepository.save(user);
+        user.avatar = fileName;
+
+        await this.usersRepository.save(user);
 
         return user;
     }

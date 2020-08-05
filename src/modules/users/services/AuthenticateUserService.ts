@@ -1,29 +1,42 @@
-import { getRepository } from 'typeorm';
-import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { injectable, inject } from 'tsyringe';
 import User from '@modules/users/infra/typeorm/entities/User';
-import authConfig from '@config/auth';
+import IUsersRepository from '@modules/users/repositories/IUsersRepository';
+import IHashProvider from '@modules/users/providers/HashProvider/models/IHashNProvider';
+import authConfig from '@config/authJwt';
 import AppError from '@shared/errors/AppError';
 
-interface RequestDTO {
+interface IRequestDTO {
     email: string;
     password: string;
 }
 
+@injectable()
 class AuthenticateUserService {
+    constructor(
+        @inject('UsersRepository')
+        private usersRepository: IUsersRepository,
+
+        @inject('HashProvider')
+        private hashProvider: IHashProvider,
+    ) {
+        // console.log(usersRepository);
+    }
+
     public async execute({
         email,
         password,
-    }: RequestDTO): Promise<{ user: User; token: string }> {
-        const userRepository = getRepository(User);
-
-        const user = await userRepository.findOne({ where: { email } });
+    }: IRequestDTO): Promise<{ user: User; token: string }> {
+        const user = await this.usersRepository.findByEmail(email);
 
         if (!user) {
             throw new AppError('Incorrect email or password.', 401);
         }
 
-        const passwordMatched = await compare(password, user.password);
+        const passwordMatched = await this.hashProvider.compareHash(
+            password,
+            user.password,
+        );
 
         if (!passwordMatched) {
             throw new AppError('Incorrect email or password.', 401);
