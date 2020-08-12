@@ -4,6 +4,7 @@ import AppError from '@shared/errors/AppError';
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import INotificationRepository from '@modules/notifications/repositories/INotificationsRepository';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface IRequestDTO {
     provider_id: string;
@@ -19,6 +20,9 @@ class CreateAppointmentService {
 
         @inject('NotificationsRepository')
         private notificationsRepository: INotificationRepository,
+
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider,
     ) {
         // console.log(appointmentsRepository);
     }
@@ -28,6 +32,8 @@ class CreateAppointmentService {
         user_id,
         date,
     }: IRequestDTO): Promise<Appointment> {
+        // const cacheKey = `provider-appointments:${provider_id}:${year}:${month}:${day}`;
+
         const appointmentDate = startOfHour(date);
         // console.log(getHours(appointmentDate));
         // console.log(isBefore(appointmentDate, Date.now()));
@@ -77,6 +83,13 @@ class CreateAppointmentService {
             recipient_id: provider_id,
             content: `Novo agendamento para a data ${dateAppointmentToContent}`,
         });
+
+        await this.cacheProvider.invalidate(
+            `provider-appointments:${provider_id}:${format(
+                appointmentDate,
+                'yyyy-M-d',
+            )}`,
+        );
 
         return appointment;
     }

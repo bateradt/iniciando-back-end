@@ -3,16 +3,19 @@ import AuthenticateUsersService from '@modules/users/services/AuthenticateUserSe
 import CreateUsersService from '@modules/users/services/CreateUserService';
 import AppError from '@shared/errors/AppError';
 import FakeHashProvider from '@modules/users/providers/HashProvider/fake/FakeHashProvider';
+import FakeCacheProvider from '@shared/container/providers/CacheProvider/fake/FakeCacheProvider';
 
 let fakeUsersRepository: FakeUsersRepository;
 let fakeHashProvider: FakeHashProvider;
 let authenticateUser: AuthenticateUsersService;
 let createUser: CreateUsersService;
+let fakeCacheProvider: FakeCacheProvider;
 
 describe('AuthenticateUser', () => {
     beforeEach(() => {
         fakeUsersRepository = new FakeUsersRepository();
         fakeHashProvider = new FakeHashProvider();
+        fakeCacheProvider = new FakeCacheProvider();
         authenticateUser = new AuthenticateUsersService(
             fakeUsersRepository,
             fakeHashProvider,
@@ -20,6 +23,7 @@ describe('AuthenticateUser', () => {
         createUser = new CreateUsersService(
             fakeUsersRepository,
             fakeHashProvider,
+            fakeCacheProvider,
         );
     });
 

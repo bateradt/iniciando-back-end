@@ -3,6 +3,7 @@ import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities/User';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
 import IHashProvider from '@modules/users/providers/HashProvider/models/IHashNProvider';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface IRequestDTO {
     name: string;
@@ -18,6 +19,9 @@ class CreateUserService {
 
         @inject('HashProvider')
         private hashProvider: IHashProvider,
+
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider,
     ) {
         // console.log(usersRepository);
     }
@@ -40,6 +44,9 @@ class CreateUserService {
             email,
             password: cryptedPass,
         });
+
+        console.log('invalidando providers');
+        await this.cacheProvider.invalidatePrefix('providers-list');
 
         return user;
     }

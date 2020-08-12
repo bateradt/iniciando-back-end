@@ -47,10 +47,10 @@ class EtherealMailProvider implements IMailProvider {
             subject,
             html: await this.mailTemplateProvider.parse(templateData),
         };
-        console.log(`Send mail: ${message}`);
+        // console.log(`Send mail: ${message}`);
         const info = await this.client.sendMail(message);
 
-        console.log('Message sent: %s', info.messageId);
+        // console.log('Message sent: %s', info.messageId);
         // Preview only available when sending through an Ethereal account
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     }
