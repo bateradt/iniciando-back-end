@@ -34,7 +34,7 @@ export default class UpdateProfileController {
 
         const user = await showProfile.execute({ user_id });
 
-        delete user.password;
+        // delete user.password;
 
         return response.status(200).json(classToClass(user));
     }

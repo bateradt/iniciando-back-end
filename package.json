@@ -1,6 +1,6 @@
 {
-    "name": "first-project-node",
-    "version": "1.0.0",
+    "name": "back-end-gobarber",
+    "version": "2.0.0",
     "main": "index.js",
     "license": "MIT",
     "scripts": {

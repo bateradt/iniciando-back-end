@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Redis, { Redis as RedisClient } from 'ioredis';
-import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProviderNew';
 import cacheConfig from '@config/cache';
 
 export default class RedisCacheProvider implements ICacheProvider {

@@ -4,7 +4,7 @@ import AppError from '@shared/errors/AppError';
 import Appointment from '@modules/appointments/infra/typeorm/entities/Appointment';
 import IAppointmentsRepository from '@modules/appointments/repositories/IAppointmentsRepository';
 import INotificationRepository from '@modules/notifications/repositories/INotificationsRepository';
-import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProviderNew';
 
 interface IRequestDTO {
     provider_id: string;
@@ -61,6 +61,7 @@ class CreateAppointmentService {
 
         const findAppointmentInSameDate = await this.appointmentsRepository.findByDate(
             appointmentDate,
+            provider_id,
         );
 
         if (findAppointmentInSameDate) {

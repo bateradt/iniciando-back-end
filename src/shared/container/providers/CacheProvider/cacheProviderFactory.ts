@@ -1,5 +1,5 @@
 import { container } from 'tsyringe';
-import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProviderNew';
 import RedisCacheProvider from '@shared/container/providers/CacheProvider/implementations/RedisCacheProvider';
 
 const cacheProviderFactory = {
@@ -8,5 +8,5 @@ const cacheProviderFactory = {
 
 container.registerSingleton<ICacheProvider>(
     'CacheProvider',
-    cacheProviderFactory.redis,
+    RedisCacheProvider,
 );

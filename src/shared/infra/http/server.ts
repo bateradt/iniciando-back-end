@@ -5,6 +5,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import 'express-async-errors';
 import { errors } from 'celebrate';
+import fs from 'fs';
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
 import rateLimiter from '@shared/infra/middlewares/rateLimiter';
@@ -12,6 +13,17 @@ import routes from './routes';
 
 import '@shared/infra/typeorm';
 import '@shared/container';
+
+try {
+    if (!fs.existsSync('.env')) {
+        console.log(
+            'Please configure environment variables with .env fallowing .env.example',
+        );
+        return;
+    }
+} catch (err) {
+    console.error(err);
+}
 
 const app = express();
 app.use(rateLimiter);
