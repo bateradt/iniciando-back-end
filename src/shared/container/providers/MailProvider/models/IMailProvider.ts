@@ -1,3 +1,5 @@
+// import ISendMailDto from '@shared/container/providers/MailProvider/dtos/ISendMailDTO';
+// import ISendMailDto from '@shared/container/providers/MailProvider/dtos/ISendMailDTO';
 import ISendMailDto from '@shared/container/providers/MailProvider/dtos/ISendMailDTO';
 
 interface IMailProvider {
@@ -5,6 +7,3 @@ interface IMailProvider {
 }
 
 export default IMailProvider;
-
-// kja\sdlkjhal\sdkjhf
-// lkajhsdlfkjasdjh

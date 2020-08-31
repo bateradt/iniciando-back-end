@@ -24,6 +24,7 @@ listProvidersRouter.get(
             provider_id: Joi.string().uuid().required(),
         },
     }),
+
     providerMonthAvailabilityController.index,
 );
 

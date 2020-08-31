@@ -31,6 +31,7 @@ class ListProvidersDayAvailiabilityService {
         month,
         year,
     }: IRequestDTO): Promise<IResponse> {
+        console.log(provider_id, day, month, year);
         const appointments = await this.appointmentsRepository.findAllInDayFromProvider(
             {
                 provider_id,

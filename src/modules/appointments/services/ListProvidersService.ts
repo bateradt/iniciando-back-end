@@ -1,4 +1,5 @@
 import { injectable, inject } from 'tsyringe';
+import { classToClass } from 'class-transformer';
 import AppError from '@shared/errors/AppError';
 import User from '@modules/users/infra/typeorm/entities//User';
 import IUsersRepository from '@modules/users/repositories/IUsersRepository';
@@ -34,7 +35,10 @@ class ListProvidersService {
                 throw new AppError('Users not found');
             }
 
-            await this.cacheProvider.save(`providers-list:${user_id}`, users);
+            await this.cacheProvider.save(
+                `providers-list:${user_id}`,
+                classToClass(users),
+            );
             // console.log('Salvou o cache');
         }
 
