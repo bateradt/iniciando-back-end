@@ -6,6 +6,7 @@ import cors from 'cors';
 import 'express-async-errors';
 import { errors } from 'celebrate';
 import fs from 'fs';
+import { exit } from 'process';
 import uploadConfig from '@config/upload';
 import AppError from '@shared/errors/AppError';
 import rateLimiter from '@shared/infra/middlewares/rateLimiter';
@@ -19,7 +20,7 @@ try {
         console.log(
             'Please configure environment variables with .env fallowing .env.example',
         );
-        return;
+        exit();
     }
 } catch (err) {
     console.error(err);
